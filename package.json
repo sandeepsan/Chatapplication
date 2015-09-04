@@ -1,0 +1,27 @@
+{
+  "name": "sandeep",
+  "version": "1.0.0",
+  "description": "Simple Chat application using NOdejs",
+  "main": "chatapp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "Free",
+  "dependencies": {
+    "redis": "^0.12.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sandeepsan/ChatappFse"
+  },
+  "keywords": [
+    "Chat"
+  ],
+  "bugs": {
+    "url": "https://github.com/sandeepsan/ChatappFse/issues"
+  },
+  "homepage": "https://github.com/sandeepsan/ChatappFse"
+}

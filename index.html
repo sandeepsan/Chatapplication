@@ -1,0 +1,142 @@
+<html>
+
+<head>
+<title>FSE Chat Application</title>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<style>
+#entire-box 
+{
+  width:100%;
+  height:100%;
+  border: 2px solid black;
+}
+#entire-box:target	 
+{
+  height:20%;
+  width:50%;
+  position: fixed;
+  top:80%;
+  overflow:hidden;
+  transform:rotate(360deg);
+  -webkit-transform:rotate(360deg);
+  -moz-transform:rotate(360deg);
+  -o-transform:rotate(360deg);
+  transition: all ease .4s;
+  -webkit-transition: all ease .4s;
+  -moz-transition: all ease .4s;
+  -o-transition: all ease .4s;		
+}
+</style>
+<script>
+var name = 0;
+var socket = io.connect("http://localhost:3000");
+$(function () {
+   //Prompt the user for the name
+   name = window.prompt("enter your name");
+
+   //If the name is not given, ask the user to enter name again
+   while(name == '')
+   {
+      name = window.prompt("Name cannot be blank. Please enter your name");
+   }
+
+   // Emit the join message to server  
+   socket.emit("join", {
+		"name": name,
+		"msg": $("#msg").val()
+		});
+
+   //When send button is clicked on, send the message to server
+   $("#send").click(function () {
+   //send to the server with person name and message
+	socket.emit("clientMsg", {
+		    "name": name,
+		     "msg": $("#msg").val()
+		});
+		$("#msg").val('');
+		});
+   var today = new Date();
+   var dd = today.getDate();
+   var mm = today.getMonth()+1; //January is 0!
+
+   var yyyy = today.getFullYear();
+   var tom = new Date();
+   var h = tom.getHours();
+   var tm = 'AM';
+   if(h<10)
+   {
+       h = '0'+h;
+   }
+   if(h>12)
+   {
+       tm='PM';
+       h=h-12;
+   }
+   else
+   {
+       tm='AM';
+   }
+   var m = tom.getMinutes();
+   if(m<10)
+   {
+       m='0'+m;
+   }
+   var s = tom.getSeconds();
+   if(s<10)
+   {
+       s = '0'+s;
+   }
+   if(dd<10)
+   {
+       dd='0'+dd
+   } 
+   if(mm<10)
+   {
+       mm='0'+mm
+   } 
+   var today = dd+'.'+mm+'.'+yyyy;
+
+   //We can do the following. Upon recieving the message print it to the message   box that is created in our html
+   socket.on("serverMsg", function (data) {
+   //Append the message from the server to the message box
+   $("#msgBox").append("<strong>"+data.name +":</strong>"+"&nbsp&nbsp"+"<small>" + today +"&nbsp&nbsp"+ h +":"+m+tm+"<small/>"+"<br/>" + "&nbspo&nbsp"+data.msg+"<br/>");});
+
+
+   $("#msg").on("keyup", function (event) {
+        socket.emit("sender", {
+           name: name
+            });
+            });
+
+   socket.on("sender", function (data) {
+        $("#status").html(data.name + " is typing");
+            setTimeout(function () {
+            $("#status").html('');
+                }, 3000);
+            });
+        });
+</script>
+</head>
+
+<body>
+    <!--Message box: To show the sent/recieved messages-->
+    <div id="entire-box" >
+    <div id="Header" style="height: 8%; width: 100%; border: 1px solid black; background:#82B4FF; color:FFF;">&nbsp FSE Chat Room
+<!-- <div id="cc-pop" style="display:block"> -->
+    <a href="#" onclick="document.getElementById('entire-box').style.display='none' "><img src="cloze.png" style="float:right"/></a>
+    <a href="#"><img src="max.png " style ="float:right"/></a>
+    <a href="#entire-box"><img src="min.png" style="float:right" /></a>
+    </div>
+    <div id="msgBox" style="height: 70%; width: 100%; border: 1px solid black; overflow-y:scroll;">
+
+    <div id="status" style="height: 6%; width:100% ;position: relative;"></div>
+</div>
+    <!--Textbox: to enter the message text-->
+    <input type="text" id="msg" style="height: 10%; width:100% ;background:SkyBlue ; border: 0 solid black;"/></input>
+    <div id="Footer" style="height: 10%; width: 100%; border: 0 solid black;background: #E6E6FA;">
+    <input type="submit" id="send" value="POST" style="height: 70% ; width: 10%; border: 1px solid black;position:relative;top: 5%;left: 40%; background:#82B4FF; color:FFF"/></input>
+    <!--Send: A button to send the message to others-->
+</div>
+</body>
+</html>
