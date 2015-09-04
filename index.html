@@ -40,6 +40,12 @@ $(function () {
    {
       name = window.prompt("Name cannot be blank. Please enter your name");
    }
+  
+
+   if(name == "null") 
+   {
+      $("body").html(" please refresh the page and try again. Name has to be entered.");
+   }
 
    // Emit the join message to server  
    socket.emit("join", {
@@ -99,8 +105,12 @@ $(function () {
 
    //We can do the following. Upon recieving the message print it to the message   box that is created in our html
    socket.on("serverMsg", function (data) {
-   //Append the message from the server to the message box
-   $("#msgBox").append("<strong>"+data.name +":</strong>"+"&nbsp&nbsp"+"<small>" + today +"&nbsp&nbsp"+ h +":"+m+tm+"<small/>"+"<br/>" + "&nbspo&nbsp"+data.msg+"<br/>");});
+   if(data.name != null)
+   {
+       //Append the message from the server to the message box
+       $("#msgBox").append("<strong>"+data.name +":</strong>"+"&nbsp&nbsp"+"<small>" + today +"&nbsp&nbsp"+ h +":"+m+tm+"<small/>"+"<br/>" + "&nbspo&nbsp"+data.msg+"<br/>");
+   }
+   });
 
 
    $("#msg").on("keyup", function (event) {
@@ -110,12 +120,15 @@ $(function () {
             });
 
    socket.on("sender", function (data) {
-        $("#status").html(data.name + " is typing");
+        if(data.name != null)
+        {
+            $("#status").html(data.name + " is typing");
             setTimeout(function () {
             $("#status").html('');
                 }, 3000);
-            });
+        }
         });
+    });
 </script>
 </head>
 
